@@ -291,7 +291,6 @@ mod sistema_elecciones {
         /// Verifica si existe una elección con el ID proporcionado utilizando el método existe_eleccion().
         /// Si la elección existe, calcula el índice válido (ajustado para el acceso a vector) y retorna una referencia mutable a la elección.
         /// Retorna None si no se encuentra ninguna elección con el ID especificado.
-
         fn obtener_eleccion_por_id(&mut self, eleccion_id:u64) -> Option<&mut Eleccion>
         {
             if self.existe_eleccion(eleccion_id) {
@@ -330,7 +329,6 @@ mod sistema_elecciones {
         /// Verifica si la votación en la elección ya ha iniciado o si la fecha de inicio es menor al timestamp del bloque actual. Si es así, retorna un error indicando que la votación ya comenzó y no se puede registrar.
         /// Verifica si la fecha de finalización de la elección es menor al timestamp del bloque actual. Si es así, retorna un error indicando que la elección ya finalizó y no se puede registrar.
         /// Retorna una referencia mutable a la elección válida si todas las validaciones pasan.
-
         fn validar_estado_eleccion(&mut self,eleccion_id:u64,block_timestamp:u64,id_usuario:AccountId) -> Result<&mut Eleccion,String>
         {
             let option_eleccion = self.obtener_eleccion_por_id(eleccion_id);
@@ -364,7 +362,6 @@ mod sistema_elecciones {
         /// Verifica si el llamador ya está registrado como usuario. Si es así, retorna un error indicando que ya está registrado.
         /// Verifica si el llamador ya está en la cola de usuarios pendientes. Si es así, retorna un error indicando que ya está en la cola de usuarios pendientes.
         /// Registra al usuario añadiéndolo a la cola de usuarios pendientes y retorna un mensaje de éxito.
-  
         #[ink(message)]
         pub fn registrarse(&mut self, nombre:String, apellido:String, dni:String) -> Result<String, String>
         {
@@ -400,7 +397,6 @@ mod sistema_elecciones {
         /// Obtiene al siguiente usuario pendiente en la lista de usuarios pendientes.
         /// Retorna un mensaje de éxito con el nombre, apellido y DNI del usuario pendiente si existe.
         /// Si no hay usuarios pendientes, retorna un error indicando que no hay usuarios pendientes.
-   
         #[ink(message)]
         pub fn obtener_informacion_siguiente_usuario_pendiente(&self) -> Result<String, String>
         {
@@ -428,7 +424,6 @@ mod sistema_elecciones {
         /// Si se acepta al usuario, lo mueve desde la lista de usuarios pendientes a la lista de usuarios.
         /// Si se rechaza al usuario, lo agrega a la lista de usuarios rechazados.
         /// Retorna un mensaje de éxito indicando si el usuario fue agregado o rechazado exitosamente.
-
         #[ink(message)]
         pub fn procesar_siguiente_usuario_pendiente(&mut self, aceptar_usuario:bool) -> Result<String, String>
         {
@@ -467,7 +462,6 @@ mod sistema_elecciones {
         /// Genera un nuevo ID para la elección basado en el tamaño actual de la lista de elecciones.
         /// Crea una nueva instancia de `Eleccion` con los parámetros dados y la agrega a la lista de elecciones.
         /// Retorna un mensaje de éxito indicando que la elección fue creada exitosamente junto con el ID de la elección.
-    
         #[ink(message)]
         pub fn crear_eleccion(&mut self, fecha_inicial:String, fecha_final:String) -> Result<String, String>
         {
@@ -516,7 +510,6 @@ mod sistema_elecciones {
         /// - Si la votación ya está iniciada, retorna un error indicando que la votación ya inició.
         /// - Si el tiempo actual es anterior a la fecha de inicio de la elección, retorna un error indicando que todavía no es la fecha para la votación.
         /// Si todas las condiciones son satisfactorias, marca la votación como iniciada y retorna un mensaje de éxito.
-
         #[ink(message)]
         pub fn iniciar_votacion(&mut self, eleccion_id:u64) -> Result<String, String>
         {
@@ -589,7 +582,6 @@ mod sistema_elecciones {
         /// Verifica si el llamador es un administrador. Si no, retorna un error indicando que no es administrador.
         /// Obtiene la elección correspondiente al ID proporcionado. Luego, procesa el siguiente usuario pendiente
         /// en la elección según la acción indicada (aceptar o rechazar) y retorna el resultado del procesamiento.
-
         #[ink(message)]
         pub fn procesar_usuarios_en_una_eleccion(&mut self, eleccion_id:u64,aceptar_usuario:bool) -> Result<String, String>
         {
@@ -615,7 +607,6 @@ mod sistema_elecciones {
         /// Verifica si el usuario está registrado. Obtiene el ID del usuario actual y el timestamp actual del bloque.
         /// Valida el estado actual de la elección y verifica si el usuario ya ha sido rechazado previamente o si ya está pendiente.
         /// Luego, agrega al usuario como pendiente en la elección y retorna un mensaje de éxito.
-    
         #[ink(message)]
         pub fn ingresar_a_eleccion(&mut self, eleccion_id:u64, tipo:TIPO_DE_USUARIO) -> Result<String, String>
         {
@@ -646,14 +637,13 @@ mod sistema_elecciones {
             return Ok(String::from("Ingresó a la elección correctamente Pendiente de aprobacion del Administrador"));
         }
         
-    /// Realiza el voto a un candidato en una elección específica.
-    /// - eleccion_id: u64 - ID de la elección.
-    /// - candidato_id: u32 - ID del candidato.
-    /// Descripción:
-    /// Verifica si el usuario está registrado. Obtiene el ID del votante y el timestamp actual del bloque.
-    /// Luego, verifica si la elección existe y si la votación está activa y en el período correcto.
-    /// Finalmente, llama al método de votar_candidato de la elección y retorna su resultado.
-   
+        /// Realiza el voto a un candidato en una elección específica.
+        /// - eleccion_id: u64 - ID de la elección.
+        /// - candidato_id: u32 - ID del candidato.
+        /// Descripción:
+        /// Verifica si el usuario está registrado. Obtiene el ID del votante y el timestamp actual del bloque.
+        /// Luego, verifica si la elección existe y si la votación está activa y en el período correcto.
+        /// Finalmente, llama al método de votar_candidato de la elección y retorna su resultado.
         #[ink(message)]
         pub fn votar_a_candidato(&mut self, eleccion_id:u64, candidato_id:u32) -> Result<String, String>
         {
@@ -683,14 +673,14 @@ mod sistema_elecciones {
             }
         }
 
-    /// Obtiene la información de un candidato en una elección específica.
-    /// - eleccion_id: u64 - ID de la elección.
-    /// - candidato_id: u32 - ID del candidato.
-    /// Result<String, String>: Información del candidato o mensaje de error.
-    /// Descripción:
-    /// Busca la elección por su ID y luego obtiene la información del candidato.
-    /// Retorna un mensaje con el nombre, apellido y DNI del candidato si está registrado;
-    /// de lo contrario, retorna un error.
+        /// Obtiene la información de un candidato en una elección específica.
+        /// - eleccion_id: u64 - ID de la elección.
+        /// - candidato_id: u32 - ID del candidato.
+        /// Result<String, String>: Información del candidato o mensaje de error.
+        /// Descripción:
+        /// Busca la elección por su ID y luego obtiene la información del candidato.
+        /// Retorna un mensaje con el nombre, apellido y DNI del candidato si está registrado;
+        /// de lo contrario, retorna un error.
         #[ink(message)]
         pub fn obtener_informacion_candidato_eleccion(&self, eleccion_id:u64, candidato_id:u32) -> Result<String, String>
         {
@@ -810,13 +800,14 @@ mod sistema_elecciones {
         }
         pub fn obtener_informacion_usuario_privado(&self, user_id: AccountId) -> Option<(String, String, String)> 
         {
-            if !self.es_generador_reportes() { return None; }
+            if !self.es_generador_reportes() && !self.es_administrador() {return None;}
 
             let option_usuario = self.usuarios.iter().find(|usuario| usuario.id == user_id);
             match option_usuario {
                 None => None,
                 Some(usuario) => Some( (usuario.nombre.clone(),  usuario.apellido.clone(),  usuario.dni.clone()) )
             }
+
         }
 
         /// Utilizado por el generador de reportes asignado por el administrador.
@@ -834,7 +825,7 @@ mod sistema_elecciones {
         }
         pub fn obtener_votantes_eleccion_por_id_privado(&mut self, eleccion_id: u64) -> Result<Vec<(AccountId,bool)>, String>
         {
-            if !self.es_generador_reportes() { return Err(String::from("No es el generador de reportes!")); }
+            if !self.es_generador_reportes() && !self.es_administrador() { return Err(String::from("No es el generador de reportes o no es el administrador!")); }
             let block_timestamp = self.env().block_timestamp();
             
             let eleccion_option = self.obtener_eleccion_por_id(eleccion_id);
@@ -859,7 +850,6 @@ mod sistema_elecciones {
         /// La función verifica si el usuario es el generador de reportes. Si no lo es, devuelve un error. Obtiene la marca de tiempo del
         /// bloque actual y verifica si la elección ha finalizado. Si la elección no ha terminado, devuelve un error. Si la elección existe
         /// y ha finalizado, devuelve la lista de candidatos con sus votos. Si la elección no existe, devuelve un error.
-
         #[ink(message)]
         pub fn obtener_candidatos_eleccion_por_id(&mut self, eleccion_id: u64) -> Result<Vec<(AccountId,u32)>, String>
         {
@@ -867,7 +857,7 @@ mod sistema_elecciones {
         }
         pub fn obtener_candidatos_eleccion_por_id_privado(&mut self, eleccion_id: u64) -> Result<Vec<(AccountId,u32)>, String>
         {
-            if !self.es_generador_reportes() { return Err(String::from("No es el generador de reportes!")); }
+            if !self.es_generador_reportes() && !self.es_administrador() { return Err(String::from("No es el generador de reportes o no es el administrador!")); }
             let block_timestamp = self.env().block_timestamp();
 
             match self.obtener_eleccion_por_id(eleccion_id){
@@ -1155,27 +1145,36 @@ mod sistema_elecciones {
         }
 
         #[ink::test]
-        fn test_obtener_informacion_usuario()
+        fn test_obtener_informacion_usuario_privado()
         {
             let generador_reportes = AccountId::from([0; 32]);
             let administrador = AccountId::from([1; 32]);
             let user_id = AccountId::from([2; 32]);
+            let random_user = AccountId::from([12; 32]);
             set_caller(administrador);
             let mut contrato = SistemaElecciones::new();
             assert!(contrato.asignar_generador_reportes(generador_reportes).is_ok());
 
-            //Intentar llamar sin ser el generador reporte
-            assert!(contrato.obtener_informacion_usuario(user_id).is_none());
             set_caller(generador_reportes);
             //Usuario no existente
-            assert!(contrato.obtener_informacion_usuario(user_id).is_none());
-
-            let user = Usuario { id: (user_id), nombre: ("Joaquin".to_string()), apellido: ("Fontana".to_string()), dni: ("22222".to_string()) };
+            let resultado = contrato.obtener_informacion_usuario_privado(user_id);
+            assert!(resultado.is_none());
+            
+            let user = Usuario { id: user_id, nombre: "Joaquin".to_string(), apellido: "Fontana".to_string(), dni: "22222".to_string() };
             let nombre = user.nombre.clone();
             let apellido = user.apellido.clone();
             let dni = user.dni.clone();
             contrato.usuarios.push(user);
-            assert!(contrato.obtener_informacion_usuario(user_id).is_some_and(|tupla| tupla.0 == nombre && tupla.1 == apellido && tupla.2 == dni));
+            
+            //Intentar llamar sin ser el generador reporte o admin
+            set_caller(random_user);
+            assert!(contrato.obtener_informacion_usuario_privado(user_id).is_none());
+            
+            set_caller(administrador);
+            assert!(contrato.obtener_informacion_usuario_privado(user_id).is_some_and(|tupla| tupla.0 == nombre && tupla.1 == apellido && tupla.2 == dni));
+            
+            set_caller(generador_reportes);
+            assert!(contrato.obtener_informacion_usuario_privado(user_id).is_some_and(|tupla| tupla.0 == nombre && tupla.1 == apellido && tupla.2 == dni));
         }
 
         #[test]

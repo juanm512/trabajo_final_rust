@@ -1,11 +1,13 @@
 #![cfg_attr(not(feature = "std"), no_std, no_main)]
 
 #[ink::contract]
-mod Reporte {
+mod reporte {
     use core::ops::Mul;
-
+    use ink::prelude::string::ToString;
     use ink::prelude::vec::Vec;
     use scale_info::prelude::string::String;
+    use scale_info::prelude::vec;
+
     use sistema_elecciones::SistemaEleccionesRef;
 
     #[ink(storage)]
@@ -154,10 +156,8 @@ mod Reporte {
                     })
                     .collect();
 
-            if candidatos.len() >= 2 {
-                if candidatos[0].4 == candidatos[1].4 {
-                    return Ok((None, candidatos));
-                }
+            if candidatos.len() >= 2 && candidatos[0].4 == candidatos[1].4 {
+                return Ok((None, candidatos));
             }
             Ok((Some(candidatos[0].clone()), candidatos))
         }
@@ -425,10 +425,8 @@ mod Reporte {
                     })
                     .collect();
 
-            if candidatos.len() >= 2 {
-                if candidatos[0].4 == candidatos[1].4 {
-                    return Ok((None, candidatos));
-                }
+            if candidatos.len() >= 2 && candidatos[0].4 == candidatos[1].4 {
+                return Ok((None, candidatos));
             }
             Ok((Some(candidatos[0].clone()), candidatos))
         }
