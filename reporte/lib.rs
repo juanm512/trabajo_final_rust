@@ -12,6 +12,7 @@ mod reporte {
 
     #[ink(storage)]
     pub struct Reporte {
+        administrador: AccountId,
         sistema_elecciones: Option<SistemaEleccionesRef>,
     }
 
@@ -21,14 +22,22 @@ mod reporte {
         #[ink(constructor)]
         pub fn new() -> Self {
             Self {
+                administrador: Self::env().caller(),
                 sistema_elecciones: None,
             }
         }
 
         /// Function to set `sistema_elecciones`.
         #[ink(message)]
-        pub fn set_sistema_elecciones(&mut self, sistema_elecciones: SistemaEleccionesRef) {
+        pub fn set_sistema_elecciones(
+            &mut self,
+            sistema_elecciones: SistemaEleccionesRef,
+        ) -> Result<String, String> {
+            if self.env().caller() != self.administrador {
+                return Err("No sos el administrador".to_string());
+            }
             self.sistema_elecciones = Some(sistema_elecciones);
+            return Ok("Sistema elecciones guardado correctamente!".to_string());
         }
 
         /// Utilizado por todos los usuarios.
